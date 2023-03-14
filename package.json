@@ -1,0 +1,49 @@
+{
+  "name": "hello_world_react",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "proskomma-cross": "^0.0.1-beta.2",
+    "epitelete": "^0.2.18",
+    "proskomma-json-tools": "^0.6.6",
+    "react": "file:../../word-aligner-rcl/node_modules/react",
+    "react-dom": "file:../../word-aligner-rcl/node_modules/react-dom",
+    "bible-reference-range": "^1.1.0",
+    "file-loader": "^6.2.0",
+    "lodash": "^4.17.21",
+    "string-punctuation-tokenizer": "2.2.0",
+    "usfm-js": "2.1.0",
+    "word-aligner": "1.0.2",
+    "wordmap-lexer": "^0.3.6",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4",
+    "word-aligner-rcl": "file:../../word-aligner-rcl"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
