@@ -9,8 +9,8 @@
     "proskomma-cross": "^0.0.1-beta.2",
     "epitelete": "^0.2.18",
     "proskomma-json-tools": "^0.6.6",
-    "react": "file:../../word-aligner-rcl/node_modules/react",
-    "react-dom": "file:../../word-aligner-rcl/node_modules/react-dom",
+    "react": "file:../word-aligner-rcl/node_modules/react",
+    "react-dom": "file:../word-aligner-rcl/node_modules/react-dom",
     "bible-reference-range": "^1.1.0",
     "file-loader": "^6.2.0",
     "lodash": "^4.17.21",
@@ -20,7 +20,7 @@
     "wordmap-lexer": "^0.3.6",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
-    "word-aligner-rcl": "file:../../word-aligner-rcl"
+    "word-aligner-rcl": "file:../word-aligner-rcl"
   },
   "scripts": {
     "start": "react-scripts start",
