@@ -1,0 +1,24 @@
+{
+    "sourceText": "Κείμενο στα ελληνικά",
+    "targetText": "Text in English",
+    "alignments": {
+        "Κείμενο" : {
+            "sourceWord": "Κείμενο",
+            "targetWords": ["Text"],
+            "sourceIndex": 0,
+            "targetIndexes": [0]
+        },
+        "στα" : {
+            "sourceWord": "στα",
+            "targetWords": ["in", "English"],
+            "sourceIndex": 1,
+            "targetIndexes": [1,2]
+        },
+        "ελληνικά" : {
+            "sourceWord": "ελληνικά",
+            "targetWords": ["in", "English"],
+            "sourceIndex": 2,
+            "targetIndexes": [1,2]
+        }
+    }
+}

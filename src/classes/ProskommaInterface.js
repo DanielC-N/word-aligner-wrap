@@ -1,11 +1,11 @@
-import { Proskomma } from 'proskomma';
+import { Proskomma } from 'proskomma-cross';
 import Axios from 'axios';
-const path = require('path');
-const fse = require('fs-extra');
+// const path = require('path');
+// const fse = require('fs-extra');
 
 class ProskommaInterface {
 
-    constructor({verbose=false}) {
+    constructor(verbose=false) {
         let proskomma = new Proskomma();
         const query = `{ id }`;
         const content = proskomma.gqlQuerySync(query) || {};
@@ -35,19 +35,35 @@ class ProskommaInterface {
         return this.usfms[docSetId];
     }
 
-    async getIds() {
-        let listIds = await this.queryPk("{ documents { id } }");
-        let arrayIds = [];
-        listIds.data.documents.forEach(element => {
-            arrayIds.push(element.id);
-        });
-        let getSpecificId = await this.queryPk(`{ documents(ids:"${arrayIds[0]}") { docSetId } }`);
+    testFirstUsfm() {
+        let arrayIds = this.getIds();
+        let getSpecificId = this.queryPk(`{ documents(ids:"${arrayIds[0]}") { docSetId } }`);
         // let getSpecificId = await this.queryPk(`{ documents { id docSetId headers { key value } } }`);
         // let getSpecificId = await this.queryPk(`{ documents { docSetId } }`);
         let myKeyUsfm = getSpecificId.data.documents[0].docSetId;
         let theUsfm = this.usfms[myKeyUsfm];
-        // console.log(JSON.stringify(getSpecificId, null, 2));
         console.log(theUsfm);
+    }
+
+    getIds() {
+        let listIds = this.queryPk("{ documents { id } }");
+        let arrayIds = [];
+        listIds.data.documents.forEach(element => {
+            arrayIds.push(element.id);
+        });
+        return arrayIds;
+    }
+
+    getSourceText() {
+        let arrayIds = this.getIds();
+        const resQuery = this.queryPk(`{ documents(ids:"${arrayIds[0]}") { mainSequence { blocks { text } } } }`);
+        return resQuery.data.documents[0].mainSequence.blocks[0].text;
+    }
+
+    getTargetText() {
+        let arrayIds = this.getIds();
+        const resQuery = this.queryPk(`{ documents(ids:"${arrayIds[1]}") { mainSequence { blocks { text } } } }`);
+        return resQuery.data.documents[0].mainSequence.blocks[0].text;
     }
 
     /**
@@ -55,32 +71,27 @@ class ProskommaInterface {
      * @param {string} rpath the relative path to the document
      * @param {string} codeLang the code of the language ["eng", "fra", "grk"]
      */
-    async addDocument(rpath, codeLang="fra", abbr="ust") {
-        let content = fse.readFileSync(path.resolve(__dirname, rpath)).toString();
-        const mutation = `mutation { addDocument(` +
-            `selectors: [{key: "lang", value: "${codeLang}"}, {key: "abbr", value: "${abbr}"}], ` +
-            `contentType: "usfm", ` +
-            `content: """${content}""") }`;
-        const docSetId = codeLang + "_" + abbr;
-        let res = await this.queryPk(mutation);
-        // does the mutation worked ?
-        if(res.data.addDocument) {
-            this.usfms[docSetId] = content;
-        }
-    }
+    // async addDocument(rpath, codeLang="fra", abbr="ust") {
+    //     let content = fse.readFileSync(path.resolve(__dirname, rpath)).toString();
+    //     const mutation = `mutation { addDocument(` +
+    //         `selectors: [{key: "lang", value: "${codeLang}"}, {key: "abbr", value: "${abbr}"}], ` +
+    //         `contentType: "usfm", ` +
+    //         `content: """${content}""") }`;
+    //     const docSetId = codeLang + "_" + abbr;
+    //     let res = await this.queryPk(mutation);
+    //     // does the mutation worked ?
+    //     if(res.data.addDocument) {
+    //         this.usfms[docSetId] = content;
+    //     }
+    // }
 
-    async testDocument(docSetId) {
-        let test = await this.queryPk(`{ documents(docSetId:\"${docSetId}\") { id } }`);
-        console.log("test docSetId :",test);
-    }
-
-    async addRawDocument(fullText, codeLang="fra", abbr="ust") {
+    addRawDocument(fullText, codeLang="fra", abbr="ust") {
         const mutation = `mutation { addDocument(` +
             `selectors: [{key: "lang", value: "${codeLang}"}, {key: "abbr", value: "${abbr}"}], ` +
             `contentType: "usfm", ` +
             `content: """${fullText}""") }`;
         const docSetId = codeLang + "_" + abbr;
-        let res = await this.queryPk(mutation);
+        let res = this.queryPk(mutation);
         // does the mutation worked ?
         if(res.data.addDocument) {
             this.usfms[docSetId] = fullText;
@@ -105,33 +116,40 @@ class ProskommaInterface {
         }
     }
 
-    async queryPk(query) {
-        const result = await this.proskomma.gqlQuery(query);
+    queryPk(query) {
+        const result = this.proskomma.gqlQuerySync(query);
         return result;
     }
 
-    async testQueryPk(query) {
-        const result = await this.proskomma.gqlQuery(query);
+    testQueryPk(query) {
+        const result = this.proskomma.gqlQuerySync(query);
         console.log(JSON.stringify(result.data.documents[0].mainBlocksText[0], null, 2));
     }
 
-    async getBookCode() {
-        const res = await this.queryPk("{ documents { bookCode: header(id:\"bookCode\") } }");
+    getBookCode() {
+        const res = this.queryPk("{ documents { bookCode: header(id:\"bookCode\") } }");
         return res.data.documents[0].bookCode;
     }
 
-    async saveFile(file, rpath="./output.json") {
-        try {
-            if(typeof file === "string") {
-                let thepath = rpath;
-                await fse.outputFile(path.resolve(thepath), file);
-            } else {
-                await fse.outputJson(path.resolve(rpath), file);
-            }
-        } catch (err) {
-            throw new Error("Failed to save the file", err)
-        }
-    }
+    // async saveFile(file, rpath="./output.json") {
+    //     try {
+    //         if(typeof file === "string") {
+    //             let thepath = rpath;
+    //             await fse.outputFile(path.resolve(thepath), file);
+    //         } else {
+    //             await fse.outputJson(path.resolve(rpath), file);
+    //         }
+    //     } catch (err) {
+    //         throw new Error("Failed to save the file", err)
+    //     }
+    // }
 }
+
+
+/**
+ * Proskomma instance
+ * @typedef Proskomma
+ * @see {@link https://github.com/abelpz/proskomma-testing-environment/tree/main/libs/pk-core}
+ */
 
 export default ProskommaInterface;
