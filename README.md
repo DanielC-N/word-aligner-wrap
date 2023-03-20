@@ -1,7 +1,7 @@
 # Getting Started with word-aligner-wrap
 
 * Use the forked version of `word-aligner-rcl` : `git clone git@github.com:DanielC-N/word-aligner-rcl.git`
-* go into the foleder `word-aligner-rcl` and do a `npm i`
+* go into the folder `word-aligner-rcl` and do a `npm i`
 * now go back to this repo on your machine
 * Take a look in `package.json` : line 12 and 13 refer to the react version of `word-aligner-rcl`
 * This line is to make sure you're using **only one instance of the same React version**
